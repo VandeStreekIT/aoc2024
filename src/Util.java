@@ -1,7 +1,9 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.List;
 
 public class Util {
     public static String readFile(String filePath) {
@@ -13,6 +15,14 @@ public class Util {
             e.printStackTrace();
         }
         return content;
+    }
+
+    public static List<String> readFileAsList(String filePath) {
+        try {
+            return Files.readAllLines(Path.of(filePath));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static int countOccurrencesInSortedArray(int[] array, int target) {
