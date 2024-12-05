@@ -25,20 +25,14 @@ public class Day4 {
         d.part1 += countMatches(rotateMatrix90(rotateMatrix90(rotateMatrix90(wordPuzzel))), regex);
         d.part1 += countMatches(rotateMatrix45(rotateMatrix90(rotateMatrix90(rotateMatrix90(wordPuzzel)))), regex);
 
-//        for (String word : wordPuzzel) {
-//            System.out.println(word);
-//        }
-//        System.out.println("");
-//        for (String word : rotateMatrix90(wordPuzzel)) {
-//            System.out.println(word);
-//        }
-//        for (String word : rotateMatrix45(wordPuzzel)) {
-//            System.out.println(word);
-//        }
-//        for (String word : rotateMatrix45(rotateMatrix90(wordPuzzel))) {
-//            System.out.println(word);
-//        }
         System.out.println("Part 1: " + d.part1);
+
+        d.part2 += countX_MAX(wordPuzzel);
+        d.part2 += countX_MAX(rotateMatrix90(wordPuzzel));
+        d.part2 += countX_MAX(rotateMatrix90(rotateMatrix90(wordPuzzel)));
+        d.part2 += countX_MAX(rotateMatrix90(rotateMatrix90(rotateMatrix90(wordPuzzel))));
+
+        System.out.println("Part 2: " + d.part2);
 
         long endTime = System.nanoTime();
         long elapsedTime = endTime - startTime;
@@ -86,6 +80,26 @@ public class Day4 {
             Matcher matcher = pattern.matcher(line);
             while (matcher.find()) {
                 count++;
+            }
+        }
+        return count;
+    }
+    public static int countX_MAX(List<String> wordPuzzel) {
+        int n = wordPuzzel.size();
+        int m = wordPuzzel.get(0).length();
+        int count = 0;
+
+        for (int i = 1; i < n - 1; i++) {
+            for (int j =  1; j < m - 1; j++) {
+                if (wordPuzzel.get(i).charAt(j) == 'A') {
+                    if (wordPuzzel.get(i-1).charAt(j-1) == 'M' &&
+                            wordPuzzel.get(i-1).charAt(j+1) == 'M' &&
+                            wordPuzzel.get(i+1).charAt(j-1) == 'S' &&
+                            wordPuzzel.get(i+1).charAt(j+1) == 'S' ){
+                        count++;
+                    }
+
+                }
             }
         }
         return count;
