@@ -16,14 +16,14 @@ public class Day3 {
         Pattern pattern = Pattern.compile(regex);
 
         for (int i = 0; i < memory.length(); i++) {
-            if (memory.substring(i, (Math.min(i + 7, memory.length() -1 ))).equals("don't()")) {
+            if (memory.substring(i, (Math.min(i + 7, memory.length() - 1))).equals("don't()")) {
                 enable = false;
-                i += 7;
+                i += 6;
                 continue;
             }
-            if (memory.substring(i, (Math.min(i + 4, memory.length() -1 ))).equals("do()")) {
+            if (memory.substring(i, (Math.min(i + 4, memory.length() - 1))).equals("do()")) {
                 enable = true;
-                i += 4;
+                i += 3;
                 continue;
             }
             String subSting = memory.substring(i, (Math.min(i + 12, (memory.length() - 1))));
@@ -31,10 +31,11 @@ public class Day3 {
                 Matcher matcher = pattern.matcher(subSting);
                 while (matcher.find()) {
                     List<Integer> calculation = Arrays.stream(
-                            matcher.group()
-                                    .substring(4, matcher.group().length() - 1)
-                                    .split(","))
+                                    matcher.group()
+                                            .substring(4, matcher.group().length() - 1)
+                                            .split(","))
                             .map(Integer::valueOf).toList();
+
                     d.part1 += calculation.get(0) * calculation.get(1);
                     if (enable) {
                         d.part2 += calculation.get(0) * calculation.get(1);
