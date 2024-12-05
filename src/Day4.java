@@ -5,24 +5,44 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Day4 {
-    private final String filePath = "input/day4_example.txt";
+    private final String filePath = "input/day4.txt";
     private int part1;
     private int part2;
 
     public static void main(String[] args) {
+        long startTime = System.nanoTime();
+
         Day4 d = new Day4();
         List<String> wordPuzzel = Util.readFileAsList(d.filePath);
-        String regex = "XMAS|SAMX";
+        String regex = "XMAS";
 
         d.part1 += countMatches(wordPuzzel, regex);
-        d.part1 += countMatches(rotateMatrix90(wordPuzzel), regex);
         d.part1 += countMatches(rotateMatrix45(wordPuzzel), regex);
+        d.part1 += countMatches(rotateMatrix90(wordPuzzel), regex);
         d.part1 += countMatches(rotateMatrix45(rotateMatrix90(wordPuzzel)), regex);
+        d.part1 += countMatches(rotateMatrix90(rotateMatrix90(wordPuzzel)), regex);
+        d.part1 += countMatches(rotateMatrix45(rotateMatrix90(rotateMatrix90(wordPuzzel))), regex);
+        d.part1 += countMatches(rotateMatrix90(rotateMatrix90(rotateMatrix90(wordPuzzel))), regex);
+        d.part1 += countMatches(rotateMatrix45(rotateMatrix90(rotateMatrix90(rotateMatrix90(wordPuzzel)))), regex);
 
+//        for (String word : wordPuzzel) {
+//            System.out.println(word);
+//        }
+//        System.out.println("");
+//        for (String word : rotateMatrix90(wordPuzzel)) {
+//            System.out.println(word);
+//        }
+//        for (String word : rotateMatrix45(wordPuzzel)) {
+//            System.out.println(word);
+//        }
+//        for (String word : rotateMatrix45(rotateMatrix90(wordPuzzel))) {
+//            System.out.println(word);
+//        }
         System.out.println("Part 1: " + d.part1);
 
-
-
+        long endTime = System.nanoTime();
+        long elapsedTime = endTime - startTime;
+        System.out.println("Uitvoeringstijd: " + elapsedTime / 1_000_000 + " milliseconds");
     }
 
     public static List<String> rotateMatrix90(List<String> wordPuzzel) {
@@ -32,7 +52,7 @@ public class Day4 {
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                rotated90.set(j, rotated90.get(j) + wordPuzzel.get(i).charAt(j));
+                rotated90.set(j, rotated90.get(j) + wordPuzzel.get(n - 1 - i).charAt(j));
             }
         }
         return rotated90;
@@ -45,7 +65,7 @@ public class Day4 {
         wordPuzzelExtended.addAll(Collections.nCopies(m - 1,".".repeat(m)));
         int n = wordPuzzelExtended.size(); // Aantal rijen
 
-        List<String> rotated45 = new ArrayList<>(Collections.nCopies(m + n - 1, ""));
+        List<String> rotated45 = new ArrayList<>(Collections.nCopies(n, ""));
 
         for (int i = 0; i < n ; i++ ) {
             int k = i;
