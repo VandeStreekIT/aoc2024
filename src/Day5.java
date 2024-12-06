@@ -40,20 +40,31 @@ public class Day5 {
                         .collect(Collectors.toList()))
                 .toList();
 
-        for (List<Integer> route : routesList) {
-            if (validManual(graph, route)) {
-                d.part1 += route.get((route.size() - 1) / 2);
-            }
-        }
+        List<List<Integer>> invalidManuals = new ArrayList<>();
 
+        for (List<Integer> route : routesList) {
+            if (!validManual(graph, route)) {
+                invalidManuals.add(route);
+                continue;
+            }
+            d.part1 += route.get((route.size() - 1) / 2);
+        }
         System.out.println(d.part1);
 
-        // Stop timer
         long endTime = System.nanoTime();
         long elapsedTime = endTime - startTime;
-        System.out.println("Uitvoeringstijd: " + elapsedTime / 1_000_000 + " milliseconds");
+        System.out.println("Uitvoeringstijd tot part 1: " + elapsedTime / 1_000_000 + " milliseconds");
 
+        // Corrigeer de routes
+        invalidManuals.forEach(route -> fixRoute(graph, route));
+        invalidManuals.forEach(route -> d.part2 += route.get((route.size() - 1) / 2));
 
+        System.out.println(d.part2);
+
+        // Stop timer
+        endTime = System.nanoTime();
+        elapsedTime = endTime - startTime;
+        System.out.println("Uitvoeringstijd tot part 2: " + elapsedTime / 1_000_000 + " milliseconds");
     }
 
     public static boolean validManual(Map<Integer, List<Integer>> graph, List<Integer> route) {
@@ -76,5 +87,26 @@ public class Day5 {
         }
         return true;
 
+    }
+
+    public static void fixRoute(Map<Integer, List<Integer>> graph, List<Integer> route) {
+        for (int i = 0; i < route.size() - 1; i++) {
+            int goal = route.get(route.size() - 1 - i);
+            List<Integer> priorNodes = route.subList(0, route.size() - 1 - i);
+
+            if (!graph.containsKey(goal)) {
+                continue;
+            }
+
+            List<Integer> commonElements = graph.get(goal).stream()
+                    .filter(priorNodes::contains)
+                    .collect(Collectors.toList());
+
+            if (!commonElements.isEmpty()) {
+                int element = route.remove(route.size() - 1 - i); // Element verwijderen
+                route.add(0, element); // Element toevoegen op index 0
+                i--;
+            }
+        }
     }
 }
