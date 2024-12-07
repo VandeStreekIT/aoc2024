@@ -2,6 +2,7 @@ import com.sun.jdi.IntegerType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 record Tuple<x, y>(x row, y column) {}
@@ -38,11 +39,11 @@ public class Day6 {
 
         d.position = d.findStart(input, "^");
 
-        d.visitedPositions.add(new Position(d.position));
-
         d.startMoving();
 
-        System.out.println(d.visitedPositions.size());
+        Set<Position> set = d.visitedPositions.stream().collect(Collectors.toSet());
+
+        System.out.println(set.size());
     }
 
 
@@ -69,6 +70,10 @@ public class Day6 {
         while (!nextPosition.equals(OBSTACLE) && position.getRow() > 0) {
             this.visitedPositions.add(new Position(this.position));
             this.position.setRow(position.getRow()-1);
+            if (this.position.getRow() == 0){
+                break;
+            }
+            nextPosition = this.map.get(this.position.getRow()-1).get(this.position.getColumn());
         }
         if (nextPosition.equals(OBSTACLE)) {
             this.moveRight();
@@ -82,6 +87,10 @@ public class Day6 {
         while (!nextPosition.equals(OBSTACLE) && position.getRow() < this.rowCount - 1) {
             this.visitedPositions.add(new Position(this.position));
             this.position.setRow(position.getRow()+1);
+            if (this.position.getRow() == this.rowCount - 1) {
+                break;
+            }
+            nextPosition = this.map.get(this.position.getRow()+1).get(this.position.getColumn());
         }
         if (nextPosition.equals(OBSTACLE)) {
             this.moveLeft();
@@ -95,6 +104,10 @@ public class Day6 {
         while (!nextPosition.equals(OBSTACLE) && position.getColumn() > 0) {
             this.visitedPositions.add(new Position(this.position));
             this.position.setColumn(position.getColumn()-1);
+            if (this.position.getColumn() == 0) {
+                break;
+            }
+            nextPosition = this.map.get(this.position.getRow()).get(this.position.getColumn()-1);
         }
         if (nextPosition.equals(OBSTACLE)) {
             this.moveUp();
@@ -107,6 +120,10 @@ public class Day6 {
         while (!nextPosition.equals(OBSTACLE) && position.getColumn() < this.columnCount - 1) {
             this.visitedPositions.add(new Position(this.position));
             this.position.setColumn(position.getColumn()+1);
+            if (this.position.getColumn() == this.columnCount - 1) {
+                break;
+            }
+            nextPosition = this.map.get(this.position.getRow()).get(this.position.getColumn()+1);
         }
         if (nextPosition.equals(OBSTACLE)) {
             this.moveDown();
@@ -124,6 +141,8 @@ class Position {
     }
 
     public Position(Position position) {
+        this.row = position.row;
+        this.column = position.column;
     }
 
     public int getRow() {
