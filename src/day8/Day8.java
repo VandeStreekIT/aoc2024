@@ -25,8 +25,8 @@ public class Day8 {
         Map<String, List<List<Integer>>> positions = findPositions(map, uniqueFreq);
 
         Set<List<Integer>> antiNodes = findNodes(positions, map);
-        d.part1 = antiNodes.size();
-        System.out.println("Part 1: " + d.part1);
+        d.part2 = antiNodes.size();
+        System.out.println("Part 2: " + d.part2);
 
         // Stop timing
         long endTime = System.nanoTime();
@@ -76,25 +76,41 @@ public class Day8 {
         Set<List<Integer>> nodes = new HashSet<>();
 
         positions.forEach((key, value) -> {
-
-
             for (int i = 0; i < value.size(); i++) {
                 for (int j = 1; j < value.size(); j++) {
-                    if (i == j) continue;
+                    if (i >= j) continue;
 
                     List<Integer> position1 = value.get(i);
                     List<Integer> position2 = value.get(j);
 
-                    List<List<Integer>> antiNodes = List.of(
-                            findPositions(position1, position2),
-                            findPositions(position2, position1));
-
-                    for (List<Integer> antiNode : antiNodes) {
-                        if (antiNode.getFirst() >= 0 && antiNode.getLast() >= 0
-                                && antiNode.getFirst() < map.size() && antiNode.getLast() < map.getFirst().size()) {
-                            nodes.add(antiNode);
+//                    List<List<Integer>> antiNodes = new ArrayList<>();
+                    List<Integer> antiNodeFreq = findAntiNodeFreq(position1, position2);
+                    nodes.add(position1);
+                    for (Integer direction : List.of(-1, 1)) {
+                        boolean onMap = true;
+                        List<Integer> position = position1;
+                        while (onMap) {
+                            List<Integer> antiNode = extrapolateFreq(position, antiNodeFreq, direction);
+                            if (antiNode.getFirst() >= 0 && antiNode.getLast() >= 0
+                                    && antiNode.getFirst() < map.size() && antiNode.getLast() < map.getFirst().size()) {
+                                nodes.add(antiNode);
+                                position = antiNode;
+                            } else {
+                                onMap = false;
+                            }
                         }
                     }
+
+//                    List<List<Integer>> antiNodes = List.of(
+//                            findPositions(position1, position2),
+//                            findPositions(position2, position1));
+//
+//                    for (List<Integer> antiNode : antiNodes) {
+//                        if (antiNode.getFirst() >= 0 && antiNode.getLast() >= 0
+//                                && antiNode.getFirst() < map.size() && antiNode.getLast() < map.getFirst().size()) {
+//                            nodes.add(antiNode);
+//                        }
+//                    }
                 }
             }
         });
@@ -104,6 +120,18 @@ public class Day8 {
     public static List<Integer> findPositions(List<Integer> position1, List<Integer> position2) {
         return IntStream.range(0, position1.size())
                 .mapToObj(j -> (position1.get(j) + (position1.get(j) - position2.get(j))))
+                .toList();
+    }
+
+    public static List<Integer> findAntiNodeFreq(List<Integer> position1, List<Integer> position2) {
+        return IntStream.range(0, position1.size())
+                .mapToObj(j -> position1.get(j) - position2.get(j))
+                .toList();
+    }
+
+    public static List<Integer> extrapolateFreq(List<Integer> position, List<Integer> antiNodeFreq, int direction) {
+        return IntStream.range(0, position.size())
+                .mapToObj(j -> position.get(j) - (antiNodeFreq.get(j) * direction))
                 .toList();
     }
 }
