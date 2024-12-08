@@ -1,5 +1,6 @@
+import util.Util;
+
 import java.util.Arrays;
-import java.util.HashSet;
 
 public class Day1 {
     private String filePath = "input/day1.txt";
