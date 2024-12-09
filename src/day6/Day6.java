@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Day6 {
-    private final String filePath = "input/day6_example.txt";
+    private final String filePath = "input/day6.txt";
     private int part1;
     private int part2;
     private List<String> visitedPositions;
@@ -48,9 +48,10 @@ public class Day6 {
 
         d.startMoving();
 
-        Set<String> set = d.visitedPositions.stream().collect(Collectors.toSet());
+        Set<String> set = d.visitedPositions.stream()
+                .map(v -> v.split("\\|")[0]).collect(Collectors.toSet());
         d.part1 = set.size();
-        System.out.println(d.part1);
+        System.out.println("Part 1: " + d.part1);
 
         d.part2Active = true;
         set.remove(d.startPosition.toString() + "|up");
@@ -58,8 +59,11 @@ public class Day6 {
         set.remove(d.startPosition.toString() + "|left");
         set.remove(d.startPosition.toString() + "|right");
 
-        for (String position : set) {
-            String coordinate = position.split("\\|")[0].replace("(", "").replace(")", "");
+        for (String posibleObstacle : set) {
+            d.visitedPositions.clear();
+            d.isLoop = false;
+            d.position = new Position(d.startPosition);
+            String coordinate = posibleObstacle.split("\\|")[0].replace("(", "").replace(")", "");
 
             int row = Integer.parseInt(coordinate.split(", ")[0]);
             int column = Integer.parseInt(coordinate.split(", ")[1]);
@@ -71,11 +75,12 @@ public class Day6 {
 
             // Restore
             d.map.get(row).set(column, ".");
-            d.isLoop = false;
-            d.position = d.startPosition;
-
         }
+        System.out.println("Part 2: " + d.part2);
 
+        long endTime = System.nanoTime();
+        long elapsedTime = endTime - startTime;
+        System.out.println("Elapsed time: " + elapsedTime / 1000000 + "ms");
     }
 
 
