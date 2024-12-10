@@ -39,6 +39,7 @@ public class Day10 {
         }
 
         System.out.println(d.part1);
+        System.out.println(d.part2);
 
         // Stop timer
         long endTime = System.currentTimeMillis();
@@ -69,10 +70,15 @@ public class Day10 {
         int row = start.get(0);
         int col = start.get(1);
         int startHeight = this.map.get(row).get(col);
-        if (startHeight == this.end && !this.visitedTops.contains(List.of(row, col))) {
-            this.visitedTops.add(new ArrayList<>(List.of(row, col)));
+        if (startHeight == this.end) {
+            this.part2++;
+            if (!this.visitedTops.contains(List.of(row, col))) {
+                this.visitedTops.add(new ArrayList<>(List.of(row, col)));
+
+            }
             return;
         }
+
 
         List<List<Integer>> nextSteps = new ArrayList<>();
         for (int[] DIRECTION : this.DIRECTIONS) {
