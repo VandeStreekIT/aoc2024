@@ -9,7 +9,7 @@ public class Day11 {
     final private String filePath = "input/day11.txt";
     private long part1;
     private long part2;
-    private Map<String, Integer> cache = new HashMap<>();
+    private Map<String, Long> cache = new HashMap<>();
 
     public static void main(String[] args) {
         // Start timer
@@ -19,9 +19,9 @@ public class Day11 {
         List<Integer> input = map(readFile(d.filePath));
 
         for (int value : input) {
-            d.part1 += blink(value, 25, d.cache);
+            d.part1 += blink(value, 75, d.cache);
         }
-        System.out.println("Part 1: " + d.part1);
+        System.out.println("Part 2: " + d.part1);
 
         // Stop timer
         long end = System.currentTimeMillis();
@@ -36,25 +36,24 @@ public class Day11 {
         return values;
     }
 
-    public static int blink(long stoneValue, int blinkValue, Map<String, Integer> cache) {
+    public static long blink(long stoneValue, int blinkValue, Map<String, Long> cache) {
         if (blinkValue == 0) {
             return 1;
         }
-        blinkValue--;
-        String stoneValueString = String.valueOf(stoneValue);
 
+        String stoneValueString = String.valueOf(stoneValue);
+        if (cache.containsKey(stoneValueString + " " + blinkValue)) {
+            return cache.get(stoneValueString + " " + blinkValue);
+        }
         if (stoneValue == 0) {
-            return blink(1, blinkValue, cache);
+            return blink(1, blinkValue -1, cache);
         } else if (stoneValueString.length() % 2 == 0) {
-            if (cache.containsKey(stoneValueString)) {
-                return cache.get(stoneValueString);
-            }
             long[] divmod = divmod(stoneValue, (long) Math.pow(10, stoneValueString.length()/2));;
-            int value = blink(divmod[0], blinkValue, cache) + blink(divmod[1], blinkValue, cache);
+            long value = blink(divmod[0], blinkValue -1, cache) + blink(divmod[1], blinkValue -1, cache);
             cache.put(stoneValueString + " " + blinkValue, value);
             return value;
         } else {
-            return blink(stoneValue * 2024, blinkValue, cache);
+            return blink(stoneValue * 2024, blinkValue -1, cache);
         }
     }
 
