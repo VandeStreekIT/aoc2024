@@ -66,6 +66,14 @@ class Area {
         return price;
     }
 
+    public int calculateBulkPrice() {
+        int price = 0;
+        for (Region region : regions) {
+            price += region.getBulkPrice(this);
+        }
+        return price;
+    }
+
     public Plot getPlot(List<Integer> location) {
         return area.get(location);
     }
